@@ -2,6 +2,8 @@
 <html>
 <head>
   <title>Battery Status API Example</title>
+
+  <script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha256.js"></script>
   <script>
     window.onload = function () {
       function updateBatteryStatus(battery) {
@@ -9,6 +11,15 @@
         document.querySelector('#level').textContent = battery.level;
         document.querySelector('#chargingTime').textContent = battery.chargingTime;
         document.querySelector('#dischargingTime').textContent = battery.dischargingTime;
+
+        var message = battery.charging.toString() +
+          battery.level.toString() +
+          battery.chargingTime.toString() +
+          battery.dischargingTime.toString();
+
+        var hash = CryptoJS.SHA256(message);
+
+        document.querySelector('#pseudoCookie').textContent = hash;
       }
 
       navigator.getBattery().then(function(battery) {
@@ -36,9 +47,11 @@
   </script>
 </head>
 <body>
-  <div id="charging">(charging state unknown)</div>
-  <div id="level">(battery level unknown)</div>
-  <div id="chargingTime">(discharging time unknown)</div>
-  <div id="dischargingTime">(discharging time unknown)</div>
+  <div> Charging: <span id="charging">(charging state unknown)</span> </div>
+  <div> Level: <span id="level">(battery level unknown)</span></div>
+  <div> Charging Time: <span id="chargingTime">(discharging time unknown)</span></div>
+  <div> Discharging Time: <span id="dischargingTime">(discharging time unknown)</span></div>
+
+  <h3> Pseudo-Cookie: <span id="pseudoCookie">(unknown)</span></h3>
 </body>
 </html>
